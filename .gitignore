@@ -1,0 +1,34 @@
+# --- Python & Django ---
+__pycache__/
+*.py[cod]
+*$py.class
+db.sqlite3
+*.log
+
+# --- Environment Variables (CRITICAL: Never commit secrets) ---
+.env
+.env.*
+
+# --- Docker ---
+# We generally commit docker-compose.yml and Dockerfile
+# But we ignore local overrides or data volumes
+docker-compose.override.yml
+
+# --- Database Data ---
+# If you mapped a local folder to postgres in docker-compose
+# (In our case we used a named volume 'postgres_data', which sits outside the project folder
+# so it's safe, but if you used ./data/db, you must ignore it)
+postgres_data/
+data/
+
+# --- IDEs & OS (Junk files) ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# --- Static/Media Files ---
+# Ignore user uploads (media) but keep the folder structure
+backend/media/
+!backend/media/.gitkeep
+backend/staticfiles/

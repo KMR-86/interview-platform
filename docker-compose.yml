@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  # The Database Service
+  db:
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=interview_db
+      - POSTGRES_USER=interview_user
+      - POSTGRES_PASSWORD=secure_password
+    ports:
+      - "5432:5432"
+
+  # The Backend Service (Django)
+  backend:
+    build: ./backend
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./backend:/app  # Syncs your folder with the container
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DEBUG=1
+      - SECRET_KEY=dev_secret_key
+      - DB_NAME=interview_db
+      - DB_USER=interview_user
+      - DB_PASSWORD=secure_password
+      - DB_HOST=db
+      - DB_PORT=5432
+
+volumes:
+  postgres_data:
