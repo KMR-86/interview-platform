@@ -3,7 +3,7 @@ djangorestframework
 psycopg2-binary
 django-cors-headers
 dj-rest-auth
-django-allauth>=0.61.1
+django-allauth==0.60.0
 requests
 cryptography
 PyJWT
