@@ -18,6 +18,8 @@ from django.contrib import admin
 from django.urls import path
 from base.views import GoogleLogin, FacebookLogin, LinkedInLogin
 from dj_rest_auth.views import LogoutView, UserDetailsView
+from base.views import InterviewerProfileView
+from base.views import InterviewerProfileView, AvailabilityView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -30,4 +32,7 @@ urlpatterns = [
     # 2. Utilities (Logout & Check Current User)
     path('api/auth/logout/', LogoutView.as_view(), name='rest_logout'),
     path('api/auth/user/', UserDetailsView.as_view(), name='rest_user_details'),
+
+    path('api/interviewer-profile/', InterviewerProfileView.as_view(), name='interviewer_profile'),
+    path('api/availability/', AvailabilityView.as_view(), name='availability'),
 ]
