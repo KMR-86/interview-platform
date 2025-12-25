@@ -1,7 +1,6 @@
 version: '3.8'
 
 services:
-  # The Database Service
   db:
     image: postgres:15
     volumes:
@@ -13,12 +12,11 @@ services:
     ports:
       - "5432:5432"
 
-  # The Backend Service (Django)
   backend:
     build: ./backend
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - ./backend:/app  # Syncs your folder with the container
+      - ./backend:/app
     ports:
       - "8000:8000"
     depends_on:
@@ -31,6 +29,18 @@ services:
       - DB_PASSWORD=secure_password
       - DB_HOST=db
       - DB_PORT=5432
+
+  frontend:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    command: sh -c "npm install && npm run dev -- --host"
+    environment:
+      - CHOKIDAR_USEPOLLING=true
 
 volumes:
   postgres_data:
