@@ -5,21 +5,30 @@ import { useNavigate } from 'react-router-dom';
 const Login = () => {
   const navigate = useNavigate();
 
+  // Example: 'https://bug-free-space-doodle-75gjxg6g54r2xxq7-8000.app.github.dev'
+  const BACKEND_URL = 'https://bug-free-space-doodle-75gjxg6g54r2xxq7-8000.app.github.dev';
+
   const googleLogin = useGoogleLogin({
     flow: 'auth-code',
     onSuccess: async (codeResponse) => {
       try {
-        const response = await axios.post('http://127.0.0.1:8000/api/auth/google/', {
+        // Updated the URL to use the dynamic backend address
+        const response = await axios.post(`${BACKEND_URL}/api/auth/google/`, {
           code: codeResponse.code,
         });
+        
         localStorage.setItem('access_token', response.data.key);
         navigate('/');
       } catch (error) {
         console.error("Login Failed:", error);
-        alert("Login failed!");
+        // Better error logging for debugging
+        if (error.response) {
+            console.error("Backend Error Data:", error.response.data);
+        }
+        alert("Login failed! Check console for details.");
       }
     },
-    onError: errorResponse => console.log(errorResponse),
+    onError: errorResponse => console.log("Google Error:", errorResponse),
   });
 
   return (
@@ -28,7 +37,7 @@ const Login = () => {
         <h1 className="text-2xl font-bold mb-6 text-gray-800">Welcome</h1>
         <button
           onClick={() => googleLogin()}
-          className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
+          className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition-colors"
         >
           Sign in with Google
         </button>
