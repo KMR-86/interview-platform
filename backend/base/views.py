@@ -38,18 +38,6 @@ class GoogleLogin(SocialLoginView):
     callback_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:5173')
     client_class = OAuth2ClientCompatibilityWrapper
 
-    def post(self, request, *args, **kwargs):
-        # Temporary debug: log incoming payload and select headers for analysis
-        try:
-            print("[SOCIAL DEBUG] GoogleLogin request.data:", request.data)
-            origin = request.META.get('HTTP_ORIGIN')
-            host = request.META.get('HTTP_HOST')
-            print(f"[SOCIAL DEBUG] Origin={origin} Host={host}")
-        except Exception as e:
-            print("[SOCIAL DEBUG] Error logging request data:", e)
-
-        return super().post(request, *args, **kwargs)
-
 class FacebookLogin(SocialLoginView):
     adapter_class = FacebookOAuth2Adapter
     callback_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:5173')

@@ -5,8 +5,9 @@ import { useNavigate } from 'react-router-dom';
 const Login = () => {
   const navigate = useNavigate();
 
-  // Example: 'https://bug-free-space-doodle-75gjxg6g54r2xxq7-8000.app.github.dev'
-  const BACKEND_URL = 'https://bug-free-space-doodle-75gjxg6g54r2xxq7-8000.app.github.dev';
+  // Backend URL is provided via Vite env var `VITE_BACKEND_URL`.
+  // Create `frontend/.env` (ignored) or set env in your deployment.
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
 
   const googleLogin = useGoogleLogin({
     flow: 'auth-code',

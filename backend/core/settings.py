@@ -12,8 +12,8 @@ ALLOWED_HOSTS = ["*"]
 
 # --- CORS & CSRF CONFIG ---
 # Merged and cleaned up URLs
-FRONTEND_URL = "https://bug-free-space-doodle-75gjxg6g54r2xxq7-5173.app.github.dev"
-BACKEND_URL = "https://bug-free-space-doodle-75gjxg6g54r2xxq7-8000.app.github.dev"
+FRONTEND_URL = os.environ.get('FRONTEND_URL', 'http://localhost:5173')
+BACKEND_URL = os.environ.get('BACKEND_URL', 'http://localhost:8000')
 
 CORS_ALLOWED_ORIGINS = [FRONTEND_URL]
 CORS_ALLOW_CREDENTIALS = True
@@ -52,8 +52,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',  # MOVED TO TOP - Required for CORS to work
-    'core.middleware.CrossOriginOpenerPolicyMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',

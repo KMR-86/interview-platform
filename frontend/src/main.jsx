@@ -4,7 +4,8 @@ import App from './App.jsx'
 import './index.css'
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
-const GOOGLE_CLIENT_ID = "998674915036-o3upvdeoisfjg87p2g99gi0a2dgq8jte.apps.googleusercontent.com";
+// Google client id is read from Vite env var `VITE_GOOGLE_CLIENT_ID`.
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
