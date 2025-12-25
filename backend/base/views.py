@@ -1,8 +1,10 @@
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
 from allauth.socialaccount.providers.linkedin_oauth2.views import LinkedInOAuth2Adapter
-from allauth.socialaccount.providers.oauth2.client import OAuth2Client
+from allauth.socialaccount.providers.oauth2.client import OAuth2Client as AllAuthOAuth2Client
+OAuth2Client = AllAuthOAuth2Client
 from dj_rest_auth.registration.views import SocialLoginView
+from django.conf import settings
 
 from rest_framework import generics, permissions
 from rest_framework.response import Response
@@ -19,19 +21,31 @@ from django.db import transaction
 # Note: "callback_url" must match what you will eventually set in your React Frontend
 # For now, we point to localhost:5173 (standard Vite React port)
 
+class OAuth2ClientCompatibilityWrapper(AllAuthOAuth2Client):
+    """Wrapper to avoid duplicate 'scope_delimiter' being passed both
+    positionally and as a keyword (some versions of dj-rest-auth/allauth
+    call the constructor differently).
+    """
+    def __init__(self, *args, **kwargs):
+        # If caller provided scope_delimiter both positionally and as kw,
+        # remove the kw to avoid TypeError: multiple values for argument.
+        kwargs.pop('scope_delimiter', None)
+        super().__init__(*args, **kwargs)
+
+
 class GoogleLogin(SocialLoginView):
     adapter_class = GoogleOAuth2Adapter
-    callback_url = "http://localhost:5173"
-    client_class = OAuth2Client
+    callback_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:5173')
+    client_class = OAuth2ClientCompatibilityWrapper
 
 class FacebookLogin(SocialLoginView):
     adapter_class = FacebookOAuth2Adapter
-    callback_url = "http://localhost:5173"
+    callback_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:5173')
     client_class = OAuth2Client
 
 class LinkedInLogin(SocialLoginView):
     adapter_class = LinkedInOAuth2Adapter
-    callback_url = "http://localhost:5173"
+    callback_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:5173')
     client_class = OAuth2Client
 
 

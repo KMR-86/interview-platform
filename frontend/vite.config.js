@@ -7,6 +7,9 @@ export default defineConfig({
     host: true,
     strictPort: true,
     port: 5173,
+    headers: {
+      'Cross-Origin-Opener-Policy': 'same-origin-allow-popups'
+    },
     watch: {
       usePolling: true
     }
