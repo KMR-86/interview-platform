@@ -31,6 +31,8 @@ services:
       - DB_PASSWORD=secure_password
       - DB_HOST=db
       - DB_PORT=5432
+      - FRONTEND_URL=https://bug-free-space-doodle-75gjxg6g54r2xxq7-5173.app.github.dev
+      - BACKEND_URL=https://bug-free-space-doodle-75gjxg6g54r2xxq7-8000.app.github.dev
 
   frontend:
     image: node:20-alpine

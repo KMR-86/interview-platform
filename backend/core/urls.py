@@ -1,38 +1,24 @@
-"""
-URL configuration for core project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.2/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.contrib import admin
-from django.urls import path
-from base.views import GoogleLogin, FacebookLogin, LinkedInLogin
-from dj_rest_auth.views import LogoutView, UserDetailsView
-from base.views import InterviewerProfileView
-from base.views import InterviewerProfileView, AvailabilityView
+from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    # 1. Social Auth Endpoints
-    path('api/auth/google/', GoogleLogin.as_view(), name='google_login'),
-    path('api/auth/facebook/', FacebookLogin.as_view(), name='facebook_login'),
-    path('api/auth/linkedin/', LinkedInLogin.as_view(), name='linkedin_login'),
+    # 1. Standard Auth (Login, Logout, User Details, Password Reset)
+    # This SINGLE line automatically gives you:
+    # - POST /api/auth/logout/
+    # - GET  /api/auth/user/
+    path('api/auth/', include('dj_rest_auth.urls')),
 
-    # 2. Utilities (Logout & Check Current User)
-    path('api/auth/logout/', LogoutView.as_view(), name='rest_logout'),
-    path('api/auth/user/', UserDetailsView.as_view(), name='rest_user_details'),
+    # 2. Registration (Signup)
+    path('api/auth/registration/', include('dj_rest_auth.registration.urls')),
 
-    path('api/interviewer-profile/', InterviewerProfileView.as_view(), name='interviewer_profile'),
-    path('api/availability/', AvailabilityView.as_view(), name='availability'),
+    # 3. Our Custom App Routes
+    # This connects the 'base/urls.py' you just created.
+    # It gives you:
+    # - /api/auth/google/
+    # - /api/interviewer/profile/
+    # - /api/interviewer/availability/
+    # - /api/interviewers/
+    path('api/', include('base.urls')),
 ]

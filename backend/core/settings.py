@@ -15,13 +15,19 @@ ALLOWED_HOSTS = ["*"]
 FRONTEND_URL = os.environ.get('FRONTEND_URL', 'http://localhost:5173')
 BACKEND_URL = os.environ.get('BACKEND_URL', 'http://localhost:8000')
 
+# Prefer explicit allowed origins for credentials; allow Codespaces/GitHub.dev subdomains via regex
 CORS_ALLOWED_ORIGINS = [FRONTEND_URL]
+CORS_ALLOWED_ORIGIN_REGEXES = [r'^https:\/\/.*\.app\.github\.dev$']
 CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = [
     FRONTEND_URL,
     BACKEND_URL,
-    "https://*.app.github.dev",
+    'http://localhost:8000',
+    'https://localhost:8000',
+    'http://127.0.0.1:8000',
+    'https://127.0.0.1:8000',
+    'https://*.app.github.dev',
 ]
 
 # Application definition
@@ -155,11 +161,28 @@ SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"
 
 APPEND_SLASH = False
 
-CORS_ALLOW_ALL_ORIGINS = True  # Temporarily allow all to confirm connection
+# Ensure cross-site cookies are sent when using session auth across app.github.dev hosts
+SESSION_COOKIE_SAMESITE = 'None'
+CSRF_COOKIE_SAMESITE = 'None'
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
+# Do NOT allow all origins when using credentials. Use explicit origins/regex above.
+CORS_ALLOW_ALL_ORIGINS = True  # temporarily permissive for debugging CORS issues
 CORS_ALLOW_CREDENTIALS = True
+
+# Log effective FRONTEND_URL at startup to verify env is loaded correctly
+try:
+    print(f"[settings] FRONTEND_URL={FRONTEND_URL}")
+except Exception:
+    pass
 
 # Add common headers that Google Auth uses
 from corsheaders.defaults import default_headers
 CORS_ALLOW_HEADERS = list(default_headers) + [
     "accept-encoding",
 ]
+
+REST_AUTH = {
+    'USER_DETAILS_SERIALIZER': 'base.serializers.UserSerializer',
+}
